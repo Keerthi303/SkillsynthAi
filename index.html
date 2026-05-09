@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Skill Synth AI{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dash-header">
+        <div>
+            <span class="eyebrow"><span class="dot"></span> Dashboard</span>
+            <h1 class="dash-title">Welcome back, <span class="grad-text">{{ current_user.name or 'Engineer' }}</span></h1>
+            <p class="text-muted">Your AI career analysis hub. Start a new analysis or review past reports.</p>
+        </div>
+        <a href="{{ url_for('dashboard.analyze_page') }}" class="btn btn--primary">New Analysis <span class="arrow">→</span></a>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="dash-stats">
+        <div class="dash-stat glass">
+            <span class="dash-stat__icon">◈</span>
+            <div>
+                <span class="dash-stat__num">{{ reports|length }}</span>
+                <span class="dash-stat__label">Total Reports</span>
+            </div>
+        </div>
+        <div class="dash-stat glass">
+            <span class="dash-stat__icon">⊹</span>
+            <div>
+                {% if reports %}
+                <span class="dash-stat__num">{{ reports[0].hiring_readiness }}%</span>
+                {% else %}
+                <span class="dash-stat__num">—</span>
+                {% endif %}
+                <span class="dash-stat__label">Latest Readiness</span>
+            </div>
+        </div>
+        <div class="dash-stat glass">
+            <span class="dash-stat__icon">⌬</span>
+            <div>
+                {% if reports %}
+                <span class="dash-stat__num">{{ reports[0].ats_score }}%</span>
+                {% else %}
+                <span class="dash-stat__num">—</span>
+                {% endif %}
+                <span class="dash-stat__label">Latest ATS</span>
+            </div>
+        </div>
+        <div class="dash-stat glass">
+            <span class="dash-stat__icon">◐</span>
+            <div>
+                {% if reports %}
+                <span class="dash-stat__num">{{ reports[0].dsa_level }}</span>
+                {% else %}
+                <span class="dash-stat__num">—</span>
+                {% endif %}
+                <span class="dash-stat__label">DSA Level</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Reports -->
+    <div class="dash-section">
+        <h2>Recent Reports</h2>
+        {% if reports %}
+        <div class="report-grid">
+            {% for report in reports %}
+            <a href="{{ url_for('dashboard.report_page', report_id=report.id) }}" class="report-card glass">
+                <div class="report-card__header">
+                    <span class="report-card__role">{{ report.target_role }}</span>
+                    <span class="report-card__date">{{ report.created_at.strftime('%b %d, %Y') if report.created_at }}</span>
+                </div>
+                <div class="report-card__scores">
+                    <div class="mini-score">
+                        <div class="mini-score__ring" style="--pct: {{ report.hiring_readiness }}">
+                            <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--glass-border)" stroke-width="2"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--accent-cyan)" stroke-width="2" stroke-dasharray="{{ report.hiring_readiness }}, 100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>
+                        </div>
+                        <span>{{ report.hiring_readiness }}%<br><small>Readiness</small></span>
+                    </div>
+                    <div class="mini-score">
+                        <div class="mini-score__ring">
+                            <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--glass-border)" stroke-width="2"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--accent-amber)" stroke-width="2" stroke-dasharray="{{ report.ats_score }}, 100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>
+                        </div>
+                        <span>{{ report.ats_score }}%<br><small>ATS</small></span>
+                    </div>
+                </div>
+                <div class="report-card__badge">{{ report.dsa_level }}</div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state glass">
+            <div class="empty-state__icon">◇</div>
+            <h3>No reports yet</h3>
+            <p>Run your first career analysis to see detailed insights about your skills and hiring readiness.</p>
+            <a href="{{ url_for('dashboard.analyze_page') }}" class="btn btn--primary">Start Analysis <span class="arrow">→</span></a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

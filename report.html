@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Report: {{ report.target_role }} — Skill Synth AI{% endblock %}
+
+{% block content %}
+<section class="report-page" data-report-id="{{ report.id }}">
+    <div class="report-header">
+        <div>
+            <span class="eyebrow"><span class="dot"></span> Career Analysis Report</span>
+            <h1 class="dash-title">{{ report.target_role }}</h1>
+            <p class="text-muted">Generated {{ report.created_at.strftime('%B %d, %Y at %H:%M') if report.created_at }}</p>
+        </div>
+        <div class="report-actions">
+            <a href="/api/report/{{ report.id }}/pdf" class="btn btn--ghost">Export PDF ↓</a>
+            <a href="{{ url_for('dashboard.dashboard_page') }}" class="btn btn--ghost">← Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Score Overview -->
+    <div class="score-overview">
+        <div class="score-card glass score-card--primary">
+            <h3>Hiring Readiness</h3>
+            <div class="score-ring score-ring--lg">
+                <svg viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke="var(--glass-border)" stroke-width="8"/>
+                    <circle id="readinessRing" cx="60" cy="60" r="52" fill="none" stroke="var(--accent-cyan)" stroke-width="8" stroke-dasharray="0, 327" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+                </svg>
+                <span class="score-ring__val" id="readinessVal">{{ report.hiring_readiness }}%</span>
+            </div>
+        </div>
+        <div class="score-card glass">
+            <h3>ATS Score</h3>
+            <div class="score-ring">
+                <svg viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke="var(--glass-border)" stroke-width="8"/>
+                    <circle id="atsRing" cx="60" cy="60" r="52" fill="none" stroke="var(--accent-amber)" stroke-width="8" stroke-dasharray="0, 327" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+                </svg>
+                <span class="score-ring__val" id="atsVal">{{ report.ats_score }}%</span>
+            </div>
+        </div>
+        <div class="score-card glass">
+            <h3>DSA Level</h3>
+            <div class="score-badge">
+                <span class="score-badge__level" id="dsaLevel">{{ report.dsa_level }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Report Content -->
+    <div id="reportContent" class="report-content">
+        <div class="loader-card glass" style="text-align:center;padding:60px;">
+            <div class="loader-spinner"></div>
+            <p style="margin-top:16px;">Loading report data...</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/report.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Something broke · Skill Synth AI{% endblock %}
+{% block content %}
+<section class="error-page">
+    <span class="error-page__code">500</span>
+    <h1>{{ message or "Something went sideways on our end." }}</h1>
+    <p>We've logged it. Try again, or head back to the start.</p>
+    <a href="{{ url_for('main.index') }}" class="btn btn--primary">Back to landing →</a>
+</section>
+{% endblock %}

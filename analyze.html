@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}New Analysis — Skill Synth AI{% endblock %}
+
+{% block content %}
+<section class="analyze-page">
+    <div class="section-head">
+        <span class="section-label">New Analysis</span>
+        <h1>Upload your profiles</h1>
+        <p class="section-sub">Submit your resume, GitHub, and LeetCode profiles. We'll do the rest.</p>
+    </div>
+
+    <form id="analyzeForm" class="analyze-form glass" enctype="multipart/form-data">
+        <!-- Target Role -->
+        <div class="form-group form-group--wide">
+            <label for="targetRole">Target Job Role <span class="required">*</span></label>
+            <div class="role-select-wrap">
+                <select id="targetRoleSelect" class="form-select">
+                    <option value="">— Select a role or type below —</option>
+                </select>
+                <input type="text" id="targetRole" name="target_role" placeholder="e.g. Backend Developer, ML Engineer, etc." required>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <!-- Resume Upload -->
+            <div class="form-group">
+                <label for="resume">Resume (PDF / DOCX)</label>
+                <div class="file-upload" id="fileUploadZone">
+                    <input type="file" id="resume" name="resume" accept=".pdf,.docx" class="file-input">
+                    <div class="file-upload__content">
+                        <span class="file-upload__icon">📄</span>
+                        <span class="file-upload__text">Drop your resume here or <strong>browse</strong></span>
+                        <span class="file-upload__hint">PDF or DOCX, max 10MB</span>
+                    </div>
+                    <div class="file-upload__selected" style="display:none;">
+                        <span class="file-upload__name"></span>
+                        <button type="button" class="file-upload__remove">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GitHub URL -->
+            <div class="form-group">
+                <label for="githubUrl">GitHub Profile URL</label>
+                <input type="url" id="githubUrl" name="github_url" placeholder="https://github.com/username">
+                <span class="form-hint">We'll analyze your repos, languages, and activity</span>
+            </div>
+
+            <!-- LeetCode Username -->
+            <div class="form-group">
+                <label for="leetcodeUsername">LeetCode Username</label>
+                <input type="text" id="leetcodeUsername" name="leetcode_username" placeholder="your_leetcode_handle">
+                <span class="form-hint">We'll analyze your problem-solving stats</span>
+            </div>
+        </div>
+
+        <div id="analyzeError" class="form-error" style="display:none;"></div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn--primary btn--lg" id="analyzeBtn">
+                <span class="btn-text">Run Full Analysis</span>
+                <span class="arrow">→</span>
+            </button>
+            <p class="form-hint">This may take 30-60 seconds depending on your profiles</p>
+        </div>
+    </form>
+
+    <!-- Loading Overlay -->
+    <div id="analysisLoader" class="analysis-loader" style="display:none;">
+        <div class="loader-card glass">
+            <div class="loader-spinner"></div>
+            <h2>Synthesizing your career profile...</h2>
+            <div class="loader-steps">
+                <div class="loader-step" data-step="resume"><span class="loader-dot"></span> Analyzing resume</div>
+                <div class="loader-step" data-step="github"><span class="loader-dot"></span> Reading GitHub repos</div>
+                <div class="loader-step" data-step="leetcode"><span class="loader-dot"></span> Checking LeetCode stats</div>
+                <div class="loader-step" data-step="ai"><span class="loader-dot"></span> AI deep analysis</div>
+                <div class="loader-step" data-step="report"><span class="loader-dot"></span> Generating report</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/analyze.js') }}"></script>
+{% endblock %}

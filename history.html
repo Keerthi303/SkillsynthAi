@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Report History — Skill Synth AI{% endblock %}
+
+{% block content %}
+<section class="history-page">
+    <div class="dash-header">
+        <div>
+            <span class="eyebrow"><span class="dot"></span> History</span>
+            <h1 class="dash-title">Your Reports</h1>
+            <p class="text-muted">View and manage all your past career analysis reports.</p>
+        </div>
+        <a href="{{ url_for('dashboard.analyze_page') }}" class="btn btn--primary">New Analysis <span class="arrow">→</span></a>
+    </div>
+
+    {% if reports %}
+    <div class="report-grid report-grid--wide">
+        {% for report in reports %}
+        <div class="report-card glass">
+            <div class="report-card__header">
+                <span class="report-card__role">{{ report.target_role }}</span>
+                <span class="report-card__date">{{ report.created_at.strftime('%b %d, %Y') if report.created_at }}</span>
+            </div>
+            <div class="report-card__scores">
+                <div class="mini-score">
+                    <div class="mini-score__ring">
+                        <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--glass-border)" stroke-width="2"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--accent-cyan)" stroke-width="2" stroke-dasharray="{{ report.hiring_readiness }}, 100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>
+                    </div>
+                    <span>{{ report.hiring_readiness }}%<br><small>Readiness</small></span>
+                </div>
+                <div class="mini-score">
+                    <div class="mini-score__ring">
+                        <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--glass-border)" stroke-width="2"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--accent-amber)" stroke-width="2" stroke-dasharray="{{ report.ats_score }}, 100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>
+                    </div>
+                    <span>{{ report.ats_score }}%<br><small>ATS</small></span>
+                </div>
+            </div>
+            <div class="report-card__footer">
+                <span class="report-card__badge">{{ report.dsa_level }}</span>
+                <div class="report-card__actions">
+                    <a href="{{ url_for('dashboard.report_page', report_id=report.id) }}" class="btn btn--ghost btn--sm">View →</a>
+                    <a href="/api/report/{{ report.id }}/pdf" class="btn btn--ghost btn--sm">PDF ↓</a>
+                    <button class="btn btn--ghost btn--sm btn--danger" onclick="deleteReport({{ report.id }})">Delete</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state glass">
+        <div class="empty-state__icon">◇</div>
+        <h3>No reports yet</h3>
+        <p>Run your first career analysis to start building your history.</p>
+        <a href="{{ url_for('dashboard.analyze_page') }}" class="btn btn--primary">Start Analysis <span class="arrow">→</span></a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function deleteReport(id) {
+    if (!confirm('Delete this report? This cannot be undone.')) return;
+    const resp = await fetch(`/api/report/${id}`, { method: 'DELETE' });
+    if (resp.ok) window.location.reload();
+}
+</script>
+{% endblock %}
