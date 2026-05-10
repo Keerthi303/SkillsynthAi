@@ -1,1 +1,40 @@
-*
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# --- Environment & Secrets ---
+# Never commit your actual .env file [cite: 2]
+.env
+.env.local
+
+# --- Flask & Databases ---
+instance/
+*.db
+*.sqlite3
+
+# --- Project Specific Data ---
+# Ignore uploaded resumes but keep the folder structure
+uploads/*
+!uploads/.gitkeep
+
+# Ignore local vector database storage
+chromadb/*
+!chromadb/.gitkeep
+
+# --- Editors & OS ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# --- Logs ---
+*.log
+logs/
